@@ -1,0 +1,29 @@
+# Byte-compiled / cache files
+__pycache__/
+*.py[cod]
+
+# Virtual environment
+venv/
+env/
+
+# VS Code settings
+.vscode/
+
+# Mac system files
+.DS_Store
+
+# Logs and temp files
+*.log
+*.tmp
+
+# Output or build folders
+dist/
+build/
+output/
+
+# Sensitive or config files (specific to your project)
+config.json
+client_secret.json
+upload_config.json
+uploaded_videos.json
+youtube_token.pickle

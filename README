@@ -1,0 +1,114 @@
+# 📚 Little Jay AI Shorts - Project Guide
+
+This guide helps you understand how to generate and upload AI-generated short videos for your YouTube channel "Jay Kids" (formerly "Little Jay").
+
+---
+
+## 📁 Project Structure
+
+```
+SHORTS_GENERATOR_FINAL/
+├── assets/music/background.mp3         # Background music used in the shorts
+├── output/                             # Auto-generated folder for episode assets
+├── check_channel.py                    # Verifies logged-in YouTube channel name
+├── client_secret.json                  # OAuth credentials for YouTube API
+├── config.json                         # OpenAI config: API key, output path, voice, etc.
+├── generate_short.py                   # Main script to generate episode content
+├── repair_shorts.py                    # (Optional) Script to repair missing content
+├── upload_config.json                  # YouTube metadata config (tags, status, etc.)
+├── upload_to_youtube.py                # Script to upload videos to YouTube
+├── uploaded_videos.json                # Keeps track of uploaded episodes
+├── youtube_token.pickle                # Auth token for YouTube API
+```
+
+---
+
+## 🛠 Prerequisites
+
+* Python 3.9+
+* FFmpeg installed and accessible via CLI
+* `pip install openai google-auth google-auth-oauthlib google-api-python-client requests Pillow`
+
+---
+
+## ✅ Step-by-Step Workflow
+
+### 1. 📌 Setup Configs
+
+* **`config.json`**:
+
+```json
+{
+  "openai_api_key": "sk-...",
+  "voice": "onyx",
+  "music_path": "assets/music/background.mp3",
+  "aspect_ratio": "portrait",
+  "output_dir": "output"
+}
+```
+
+* **`upload_config.json`**:
+
+```json
+{
+  "expected_channel_name": "Jay Kids",
+  "default_description": "A short story from Jay & Tiger!",
+  "tags": ["shorts", "kids", "story", "jayandtiger"],
+  "category_id": "1",
+  "privacy_status": "public"   // ← Important for auto-publishing
+}
+```
+
+### 2. 🧠 Generate New Episode
+
+Run:
+
+```bash
+python3 generate_short.py
+```
+
+This will:
+
+* Generate title, script, prompt using GPT-4
+* Generate image using DALL·E 3
+* Generate audio using OpenAI TTS
+* Create a 60-sec video using FFmpeg
+* Save all assets in `output/epXX-episode-title/`
+
+### 3. 📤 Upload to YouTube
+
+Run:
+
+```bash
+python3 upload_to_youtube.py
+```
+
+This will:
+
+* Authenticate your YouTube account (first time only)
+* Skip already uploaded videos using `uploaded_videos.json`
+* Upload new videos with title, description, tags
+* Set privacy status (public/unlisted) from config
+
+---
+
+## 🔁 Tips
+
+* To change voice, update `voice` in `config.json`
+* To re-authenticate YouTube, delete `youtube_token.pickle`
+* To repair videos with missing output, use `repair_shorts.py`
+* To skip animation manually, create dummy `video.mp4`
+
+---
+
+## 🧼 To Reset Everything
+
+```bash
+rm youtube_token.pickle uploaded_videos.json output/*
+```
+
+---
+
+## 👋 Credits
+
+Created by Sankar using OpenAI, DALL·E, FFmpeg, and YouTube API integrations.
