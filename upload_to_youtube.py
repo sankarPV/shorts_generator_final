@@ -8,6 +8,7 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
+from datetime import datetime, timedelta, timezone
 
 # YouTube API setup
 SCOPES = SCOPES = [
@@ -75,6 +76,16 @@ def parse_title(folder_name):
     title = parts[1].replace("-", " ").title()
     return f"Jay & Tiger: Episode {int(ep_num)}: {title}"
 
+# Get scheduled time - 6 PM IST
+def get_scheduled_time():
+    # Schedule for next 6 PM IST (UTC+5:30)
+    now_utc = datetime.now(timezone.utc)
+    today_6pm_ist = now_utc.astimezone().replace(hour=18, minute=0, second=0, microsecond=0)
+    scheduled_time = today_6pm_ist - timedelta(hours=5, minutes=30)  # convert IST to UTC
+    if now_utc >= scheduled_time:
+        scheduled_time += timedelta(days=1)
+    return scheduled_time.isoformat()
+
 # Upload video
 def upload_video(youtube, folder):
     video_path = folder / "video.mp4"
@@ -97,7 +108,8 @@ def upload_video(youtube, folder):
             "categoryId": CATEGORY_ID
         },
         "status": {
-            "privacyStatus": PRIVACY_STATUS
+            "privacyStatus": PRIVACY_STATUS,
+            "publishAt": get_scheduled_time()
         }
     }
 
